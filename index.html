@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartExam Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .page {
+            display: none;
+        }
+        .active-page {
+            display: block;
+        }
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .timer {
+            font-family: 'Courier New', monospace;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .question-card {
+            border-left: 4px solid #3b82f6;
+        }
+        .selected-option {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        .profile-stats {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="mainNav" class="hidden bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="bi bi-mortarboard-fill text-2xl text-blue-600"></i>
+                    <span class="ml-2 font-bold text-xl">SmartExam</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showPage('dashboard')" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Dashboard</button>
+                    <button onclick="showPage('exams')" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Exams</button>
+                    <button onclick="showPage('results')" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Results</button>
+                    <button onclick="showPage('profile')" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100">Profile</button>
+                    <button onclick="logout()" class="px-4 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page active-page min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div class="text-center mb-8">
+                <i class="bi bi-mortarboard-fill text-5xl text-blue-600"></i>
+                <h2 class="mt-4 text-2xl font-bold">Welcome to SmartExam</h2>
+                <p class="text-gray-600">Please login to continue</p>
+            </div>
+            <form onsubmit="login(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page p-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Upcoming Exams</p>
+                        <h3 class="text-2xl font-bold">3</h3>
+                    </div>
+                    <i class="bi bi-calendar-event text-3xl text-blue-600"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Completed Exams</p>
+                        <h3 class="text-2xl font-bold">12</h3>
+                    </div>
+                    <i class="bi bi-check-circle text-3xl text-green-600"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Average Score</p>
+                        <h3 class="text-2xl font-bold">85%</h3>
+                    </div>
+                    <i class="bi bi-graph-up text-3xl text-purple-600"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
+            <div class="space-y-4">
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <i class="bi bi-pencil-square text-blue-600 text-xl mr-3"></i>
+                    <div>
+                        <p class="font-medium">Mathematics Final Exam</p>
+                        <p class="text-sm text-gray-500">Completed • Score: 92%</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <i class="bi bi-book text-green-600 text-xl mr-3"></i>
+                    <div>
+                        <p class="font-medium">Science Quiz</p>
+                        <p class="text-sm text-gray-500">Upcoming • 2 days left</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exams Page -->
+    <div id="exams" class="page p-6 max-w-7xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Available Exams</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card bg-white border rounded-lg overflow-hidden shadow-sm">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Mathematics</h3>
+                        <p class="text-gray-600 mb-4">Final Examination</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-500">Duration: 2 hours</span>
+                            <span class="text-sm text-gray-500">Questions: 50</span>
+                        </div>
+                        <button onclick="startExam()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            Start Exam
+                        </button>
+                    </div>
+                </div>
+                <!-- More exam cards... -->
+            </div>
+        </div>
+
+        <!-- Active Exam Section -->
+        <div id="activeExam" class="hidden bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Mathematics Final Exam</h2>
+                <div class="timer text-xl font-bold text-blue-600">02:00:00</div>
+            </div>
+            <div class="space-y-6">
+                <div class="question-card bg-gray-50 p-6 rounded-lg">
+                    <p class="text-lg font-medium mb-4">Question 1: What is the value of π (pi) to two decimal places?</p>
+                    <div class="space-y-3">
+                        <button class="w-full text-left p-3 rounded-md border hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            A) 3.14
+                        </button>
+                        <button class="w-full text-left p-3 rounded-md border hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            B) 3.15
+                        </button>
+                        <button class="w-full text-left p-3 rounded-md border hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            C) 3.16
+                        </button>
+                        <button class="w-full text-left p-3 rounded-md border hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            D) 3.17
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between mt-6">
+                <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Previous</button>
+                <button class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results" class="page p-6 max-w-7xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6">Exam Results</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Exam Name
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Score
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">Mathematics Final</td>
+                            <td class="px-6 py-4 whitespace-nowrap">2023-12-01</td>
+                            <td class="px-6 py-4 whitespace-nowrap">92%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Passed
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page p-6 max-w-7xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="profile-stats text-white p-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center">
+                        <i class="bi bi-person-fill text-4xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-6">
+                        <h2 class="text-2xl font-bold">John Doe</h2>
+                        <p>Student ID: ST12345</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-sm opacity-75">Total Exams</p>
+                        <p class="text-2xl font-bold">15</p>
+                    </div>
+                    <div>
+                        <p class="text-sm opacity-75">Average Score</p>
+                        <p class="text-2xl font-bold">85%</p>
+                    </div>
+                    <div>
+                        <p class="text-sm opacity-75">Rank</p>
+                        <p class="text-2xl font-bold">#5</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-4">Personal Information</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-500">Email</p>
+                        <p class="font-medium">john.doe@example.com</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Phone</p>
+                        <p class="font-medium">+1 234 567 890</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Department</p>
+                        <p class="font-medium">Computer Science</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Semester</p>
+                        <p class="font-medium">4th</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+        }
+
+        // Login Function
+        function login(event) {
+            event.preventDefault();
+            document.getElementById('loginPage').classList.remove('active-page');
+            document.getElementById('mainNav').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('active-page');
+        }
+
+        // Logout Function
+        function logout() {
+            document.getElementById('mainNav').classList.add('hidden');
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+            document.getElementById('loginPage').classList.add('active-page');
+        }
+
+        // Start Exam Function
+        function startExam() {
+            document.getElementById('activeExam').classList.remove('hidden');
+            // Start timer
+            let time = 7200; // 2 hours in seconds
+            const timerElement = document.querySelector('.timer');
+            
+            const timer = setInterval(() => {
+                time--;
+                const hours = Math.floor(time / 3600);
+                const minutes = Math.floor((time % 3600) / 60);
+                const seconds = time % 60;
+                
+                timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                if (time <= 0) {
+                    clearInterval(timer);
+                    alert('Time is up!');
+                }
+            }, 1000);
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
